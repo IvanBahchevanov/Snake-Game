@@ -9,6 +9,7 @@ import java.awt.Label;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -18,7 +19,6 @@ public class GameBoard extends JPanel implements ActionListener  {
     private final int BOARD_WIDTH = 300;
     private final int BOARD_HEIGHT = 300;
     private final int STEP_SIZE = 10;
-    private final int RAND_POS = 30;
     private final int[] x = new int[300];
     private final int [] y = new int[300];
     
@@ -26,12 +26,12 @@ public class GameBoard extends JPanel implements ActionListener  {
     private int appleX;
     private int appleY;
     
-    private final String head = "{}" ;
-    
     protected static boolean right_direction = false;
     protected static boolean down_direction = false;
     protected static boolean left_direction = false;
     protected  static boolean up_direction = false;
+    
+    private boolean death = false;
     
     protected static int score = 0;
     
@@ -70,15 +70,25 @@ public class GameBoard extends JPanel implements ActionListener  {
    }
    
    private void doDrowings(Graphics gr){
-       gr.setColor(Color.red);
-       gr.drawString("@", appleX, appleY); // draws the apple
+       if( !death) {
+           gr.setColor(Color.red);
+           gr.drawString("@", appleX, appleY); // draws the apple
        
-       gr.drawString("O", x[0], y[0]);     // draws the snake head
+           gr.drawString("O", x[0], y[0]);     // draws the snake head
+       
                                            // the snake body
-       gr.setColor(Color.GREEN);
-       for (int i = 1; i < body; i++) {
-               gr.drawString("O",  x[i], y[i]);
+           gr.setColor(Color.GREEN);
+           for (int i = 1; i < body; i++) {
+                gr.drawString("O",  x[i], y[i]);
+           }
        }
+       else {
+           setBackground(Color.red);
+           gr.setColor(Color.BLACK);
+           gr.drawString("0xDEATHBEEF", 100, 130);
+           
+       }
+       
        
        Toolkit.getDefaultToolkit().sync();
        gr.dispose();
@@ -92,8 +102,6 @@ public class GameBoard extends JPanel implements ActionListener  {
              dropApple();
         }
     }
-   
-   
     
     private void makeMove() {
         
@@ -116,21 +124,39 @@ public class GameBoard extends JPanel implements ActionListener  {
         
     }
     
+    /*
+      generates the apples coordinates within the game field
+    */
     private void dropApple(){
-       int r = (int) (Math.random() * RAND_POS);
-       appleX = ((r * STEP_SIZE));
-
-       r = (int) (Math.random() * RAND_POS);
-       appleY = ((r * STEP_SIZE));
-        
-//       System.out.println( appleX + "  " + appleY);
+       
+       appleX = (new Random().nextInt( BOARD_WIDTH / STEP_SIZE)) * STEP_SIZE;
+       appleY = new Random().nextInt(BOARD_HEIGHT / STEP_SIZE) * STEP_SIZE;
    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         checkApple();
         makeMove();
-        
+        detectCollision();
         repaint();
-    }    
+    }
+    
+    private void detectCollision() {
+        if ( (x[0] >= BOARD_WIDTH ) || ( x[0] < 0 ) ) {
+            death = true;
+        }
+        
+        if ( ( y[0] >= BOARD_HEIGHT) || ( y[0] < 0 ) ) {
+            
+            death = true;
+        }
+        
+        if (score > 2) {
+            for (int i = body; i > 0; i--) {
+            if (x[0] == x[i] && y[0] == y[i] ) {
+                death = true;
+                }
+            }
+        }
+    }
 }
