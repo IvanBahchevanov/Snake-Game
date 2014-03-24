@@ -89,7 +89,6 @@ public class GameBoard extends JPanel implements ActionListener  {
              body++;
              score++;
              scoreLabel.setText("SCORE : " + score + " ");
-             System.out.println(body);
              dropApple();
         }
     }
