@@ -1,15 +1,13 @@
-
-
 package mysnake;
 
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Label;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -38,14 +36,14 @@ public class GameBoard extends JPanel implements ActionListener  {
     private int speed = 200;    
     Timer timer ;
     
-    static Label scoreLabel;
+    static JLabel scoreLabel;
     
     public GameBoard() {
         addKeyListener(new TAdapter());
         setPreferredSize(new Dimension( BOARD_WIDTH, BOARD_HEIGHT));
         setBackground(Color.BLACK);
         setFocusable(true);
-        scoreLabel = new Label("SCORE : ");
+        scoreLabel = new JLabel("SCORE : ");
         startGame();
     }
     
@@ -89,7 +87,6 @@ public class GameBoard extends JPanel implements ActionListener  {
            
        }
        
-       
        Toolkit.getDefaultToolkit().sync();
        gr.dispose();
    }
@@ -98,7 +95,8 @@ public class GameBoard extends JPanel implements ActionListener  {
         if ( (x[0] == appleX )&& (y[0] == appleY) ) {
              body++;
              score++;
-             scoreLabel.setText("SCORE : " + score + " ");
+             scoreLabel.setText("SCORE : " + score );
+             
              dropApple();
         }
     }
@@ -106,8 +104,8 @@ public class GameBoard extends JPanel implements ActionListener  {
     private void makeMove() {
         
         for (int i = body; i > 0; i--) {
-            x[ i ] = x[ i - 1 ];
-            y[ i ] = y[ i - 1 ];
+            x[i] = x[i - 1];
+            y[i] = y[i - 1];
         }
         
         if ( right_direction ) 
